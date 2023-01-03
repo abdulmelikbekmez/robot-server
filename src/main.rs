@@ -41,8 +41,8 @@ pub enum Command {
 }
 
 #[tokio::main]
-async fn main() {
-    let listener = TcpListener::bind(format!("{}:{}", IP, PORT)).await.unwrap();
+async fn main() -> std::io::Result<()> {
+    let listener = TcpListener::bind(format!("{}:{}", IP, PORT)).await?;
     println!("Server listening on port {}", PORT);
 
     let global_state = State::new();
@@ -50,7 +50,7 @@ async fn main() {
     let (tx, _) = broadcast::channel::<Message>(5);
 
     loop {
-        let (socket, _) = listener.accept().await.unwrap();
+        let (socket, _) = listener.accept().await?;
         println!("New connection received");
         tokio::spawn(handle_client(socket, tx.clone(), global_state.clone()));
     }
