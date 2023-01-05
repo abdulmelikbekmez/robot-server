@@ -15,10 +15,10 @@ impl Request {
 
         let s = String::from_utf8(tmp.to_vec());
         println!("input => {:?}", s);
-        // let a = serde_json::from_slice(tmp).unwrap();
-        let Ok(res) = serde_json::from_slice::<Request>(tmp) else {
-            return Err("Deser error".to_string());
-        };
+
+        let res = serde_json::from_slice::<Request>(tmp)
+            .map_err(|e| format!("deserialize error: {}", e.to_string()))?;
+
         println!("request => {:?}", res);
         return Ok(res);
     }
